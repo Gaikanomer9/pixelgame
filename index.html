@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<body style="width: 100%; height:100vh">
+
+<canvas id="myCanvas" width="1000" height="1000"
+style="border:1px solid #d3d3d3;">
+Your browser does not support the HTML canvas tag.</canvas>
+
+
+<script>
+// Define the cell size, grid size, and border size
+const cellSize = 10;
+const gridSize = 80;
+const borderSize = 1;
+
+// Calculate the total width and height including the borders
+const width = gridSize * (cellSize + borderSize) + borderSize;
+const height = gridSize * (cellSize + borderSize) + borderSize;
+
+// Create an empty data array with 4 channels per pixel (R, G, B, A)
+const dataArray = new Uint8ClampedArray(width * height * 4);
+
+// Fill in the data array
+for (let y = 0; y < height; y++) {
+  for (let x = 0; x < width; x++) {
+    // Determine the index in the data array
+    const index = (y * width + x) * 4;
+
+    // Check if this pixel is part of the outer border or cell border
+    const isOuterBorder = x < borderSize || x >= width - borderSize || y < borderSize || y >= height - borderSize;
+    const isCellBorder = x % (cellSize + borderSize) === 0 || y % (cellSize + borderSize) === 0 || (x + 1) % (cellSize + borderSize) === 0 || (y + 1) % (cellSize + borderSize) === 0;
+
+    if (isOuterBorder || isCellBorder) {
+      // Set the pixel to black (R, G, B, A)
+      dataArray[index] = 0;   // R
+      dataArray[index + 1] = 0; // G
+      dataArray[index + 2] = 0; // B
+      dataArray[index + 3] = 255; // A
+    } else {
+      // Set the pixel to white (R, G, B, A)
+      dataArray[index] = 255;   // R
+      dataArray[index + 1] = 255; // G
+      dataArray[index + 2] = 255; // B
+      dataArray[index + 3] = 255; // A
+    }
+  }
+}
+
+// Create the ImageData object
+const imageData = new ImageData(dataArray, width, height);
+
+// You can now use this ImageData object with a CanvasRenderingContext2D
+// For example, to draw it onto a canvas:
+const canvas = document.getElementById('myCanvas');
+const ctx = canvas.getContext('2d');
+ctx.putImageData(imageData, 0, 0);
+
+
+</script>
+
+</body>
+</html>
+
